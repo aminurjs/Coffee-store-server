@@ -42,6 +42,38 @@ app.post("/coffees", async (req, res) => {
   res.send(result);
 });
 
+app.put("/coffee/update/:id", async (req, res) => {
+  const id = req.params.id;
+  const coffee = req.body;
+  const filter = { _id: new ObjectId(id) };
+  const options = { upsert: true };
+  const updateCoffee = {
+    $set: {
+      name: coffee.name,
+      chef: coffee.chef,
+      supplier: coffee.supplier,
+      taste: coffee.taste,
+      category: coffee.category,
+      details: coffee.details,
+      photo: coffee.photo,
+    },
+  };
+  console.log(updateCoffee);
+  const result = await coffeeCollection.updateOne(
+    filter,
+    updateCoffee,
+    options
+  );
+  res.send(result);
+});
+
+app.delete("/coffee/delete/:id", async (req, res) => {
+  const id = req.params.id;
+  const query = { _id: new ObjectId(id) };
+  const result = await coffeeCollection.deleteOne(query);
+  res.send(result);
+});
+
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
